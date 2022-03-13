@@ -1,0 +1,38 @@
+Pentru a rula tema, se da comanda:  docker-compose up --build
+
+Rutele pentru cereri se gasesc la localhost pe portul 5000, la url-ul http://localhost:5000/api/...
+
+Am scris tema in Python, folosind flask si my-sql-connector pentru conexiunea cu baza de date MySQL
+
+Baza de date, folosind clientul phpMyAdmin, se poate vedea la url-ul http://localhost:8081.
+Username-ul este "root", iar parola este "root".
+
+Creez baza de date folosind scriptul init.sql.
+Am scris cate o functie pentru fiecare ruta.
+In fiecare functie, mai intai ma conectez la baza de date, iar la final inchid conexiunea.
+Pentru a executa interogarile SQL, creez un cursor, pe care il inchid dupa executia interogarii.
+Pentru cererile de tip GET fac operatii pe tabele de tip SELECT.
+Pentru cererile de tip POST fac operatii pe tabele de tip INSERT INTO.
+Pentru cererile de tip PUT fac operatii pe tabele de tip UPDATE.
+Pentru cererile de tip DELETE fac operatii pe tabele de tip DELETE.
+
+In cazul cererilor POST returnez codurile de eroare:
+- 400, cand body-ul din request este gol sau nu apar toate campurile
+- 409, cand apare eroarea de integritate de la mysql.connector, adica nu se respecta UNIQUE
+CONSTRAINT
+
+In cazul cererilor PUT:
+- returnez 400 cand body-ul din request e incomplet. Din cerinta am inteles ca trebuie sa fac
+update la toate campurile
+- 409, la fel ca la POST
+- 404, daca id-ul din url nu exista printre id-urile din baza de date
+- returnez, de asemenea bad request 400, cand id-ul din url nu este acelasi cu cel din body.
+
+La DELETE este la fel ca la PUT, mai putin codul de eroare 409.
+
+Returnez 400 BAD REQUEST la cererile PUT si POST de la tabelele "orase" si "temperaturi"
+daca id-ul tarii, respectiv id-ul orasului specificat in body, nu exista in baza de date.
+Fac acest lucru prin doua functii auxiliare care fac cate un select in baza de date.
+
+
+

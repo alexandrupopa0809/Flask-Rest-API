@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  src:
+    build: ./src
+    links:
+      - db
+    ports:
+      - "5000:5000"
+  db:
+    image: mysql:8.0.21
+    ports:
+      - "31003:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+      - dbdata:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - "8081:80"
+
+volumes:
+  dbdata:
